@@ -1,38 +1,43 @@
-# Lista de pruebas: PES 6 en PSP original
+# Lista de pruebas: PES 6 en PPSSPP Android
 
-Usa esta lista para anotar datos y no confundir una conexión al servidor con compatibilidad real del juego.
+La base de datos upstream de `aemu_postoffice` consultada durante la preparación incluye entradas para los IDs `ULES00476` (PES 6 europeo) y `ULUS10169` (versión estadounidense Winning Eleven: Pro Evolution Soccer 2007), además de alias regionales. Esto indica que el servidor conoce esas IDs, pero no confirma que una partida de PES 6 funcione sin problemas.
 
 ## Datos del entorno
 
-- PSP del jugador A: modelo / firmware:
-- PSP del jugador B: modelo / firmware:
+- Teléfono A / versión de Android:
+- Teléfono B / versión de Android:
+- PPSSPP A y B (se recomienda 1.20.1 o posterior para relay):
+- ID de juego A:
+- ID de juego B:
 - Versión/región de PES 6 A:
 - Versión/región de PES 6 B:
-- Complemento o cliente de red instalado:
-- Versión del cliente:
-- Servidor y versión:
-- Red del jugador A:
-- Red del jugador B:
+- IP/DNS del VPS (no la publiques en capturas):
 - Fecha de prueba:
 
 ## Pruebas
 
 | Prueba | Resultado | Notas |
 |---|---|---|
-| Ambos dispositivos inician el juego | Pendiente | |
-| Ambos tienen el mismo modo de juego disponible | Pendiente | |
-| El cliente de red se inicia correctamente | Pendiente | |
-| Ambos llegan al servicio de red | Pendiente | |
-| El jugador A puede crear/entrar a una sala | Pendiente | |
-| El jugador B puede ver/entrar a la misma sala | Pendiente | |
-| La partida comienza | Pendiente | |
+| Contenedor se inicia sin errores | Pendiente | |
+| Puertos 27312 TCP/UDP accesibles | Pendiente | |
+| Puertos 27313 TCP/UDP accesibles | Pendiente | |
+| Ambos clientes PPSSPP se conectan al servidor | Pendiente | |
+| Ambos pueden entrar al mismo modo/sala Ad Hoc | Pendiente | |
+| El juego inicia una partida entre los dos | Pendiente | |
 | La partida se mantiene estable | Pendiente | |
 | Prueba entre redes diferentes | Pendiente | |
 | Prueba usando datos móviles | Pendiente | |
+| Prueba con otro juego Ad Hoc | Pendiente | |
 
 ## Diagnóstico básico
 
-- Si el cliente no se conecta: comprobar dirección del servidor, DNS, puertos documentados y firewall.
-- Si conecta al servicio pero no ve salas: comprobar compatibilidad del protocolo y configuración de sala.
-- Si ve al otro jugador pero la partida falla: revisar versión/región del juego, modo de juego y compatibilidad del cliente.
-- No compartas públicamente direcciones IP personales, contraseñas ni registros que contengan datos privados.
+- Si no conecta: comprueba la IP/DNS pública del VPS, el estado del contenedor, el firewall del VPS y el firewall del proveedor.
+- Si conecta al servicio pero no ve salas: comprueba el ID de juego y la compatibilidad del modo Ad Hoc.
+- Si ve al otro jugador pero la partida falla: prueba primero otro juego Ad Hoc conocido y registra las versiones exactas de PPSSPP y PES 6.
+- No compartas públicamente contraseñas, claves SSH ni registros que incluyan datos privados.
+
+## Estado de verificación
+
+- Protocolo: documentado por PPSSPP como `aemu_postoffice` relay en PPSSPP 1.20.1+.
+- ID europeo `ULES00476`: presente en la base de datos upstream consultada.
+- Partida real de PES 6: **no probada todavía**.
