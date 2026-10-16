@@ -1,0 +1,21 @@
+services:
+  psp-online-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        AEMU_REF: main
+    container_name: psp-online-server
+    restart: unless-stopped
+    init: true
+    ports:
+      - "27312:27312/tcp"
+      - "27312:27312/udp"
+      - "27313:27313/tcp"
+      - "27313:27313/udp"
+      # Keep the status page private on the VPS by default.
+      - "127.0.0.1:8888:8888/tcp"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
