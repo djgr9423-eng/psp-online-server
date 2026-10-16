@@ -1,46 +1,52 @@
 # PSP Online Server
 
-Proyecto experimental para investigar cómo conectar dos consolas **PSP originales** a través de Internet y probar **PES 6 para PSP**.
+Proyecto para desplegar un servidor privado de retransmisión Ad Hoc para PPSSPP y juegos compatibles de PSP, alojado en un VPS Linux.
 
-> **Estado:** documentación inicial. Este repositorio todavía no contiene un servidor compatible con el protocolo de PES 6 y no debe considerarse listo para partidas reales.
+**Estado:** archivos de despliegue añadidos; todavía no se ha desplegado ni probado una partida real de PES 6.
 
-## Objetivo
+## Base técnica
 
-- Investigar soluciones existentes para multijugador *ad hoc* de PSP a través de Internet.
-- Identificar qué cliente o complemento requiere cada solución en una PSP original.
-- Verificar compatibilidad específica con PES 6 y sus versiones/regiones.
-- Documentar pruebas entre redes distintas, incluidas conexiones de datos móviles.
-- Evitar implementar un protocolo nuevo incompatible con el juego cuando ya existe una solución adecuada.
+PPSSPP documenta soporte para retransmisión mediante el protocolo `aemu_postoffice` a partir de PPSSPP 1.20.1. Este repositorio prepara Docker para construir el servidor de código abierto [Kethen/aemu_postoffice](https://github.com/Kethen/aemu_postoffice) y configurar los puertos necesarios.
 
-## Importante: servidor no significa compatibilidad automática
+No implementamos un protocolo de red propio desde cero: reutilizamos una implementación existente para evitar crear un servidor incompatible.
 
-PES 6 no se conectará a cualquier servidor web o UDP genérico. Los dos jugadores necesitan una solución compatible con el protocolo de red que utiliza el juego, y el servidor debe implementar el protocolo esperado por el cliente/complemento. Este proyecto no afirma todavía esa compatibilidad.
+## Archivos
 
-## Investigación inicial
+- `Dockerfile`: compila el servidor upstream durante la construcción.
+- `docker-compose.yml`: ejecuta el servidor con reinicio automático.
+- `config.json`: configuración del relay y del servicio adhocctl.
+- `docs/PPSSPP-SETUP.md`: pasos para configurar ambos teléfonos.
+- `docs/DEPLOYMENT.md`: instrucciones de despliegue y firewall.
+- `docs/PES6-TESTS.md`: lista de verificación para probar juegos.
 
-- [PPSSPP: documentación y comunidad](https://www.ppsspp.org/)
-- [Kethen/aemu_postoffice](https://github.com/Kethen/aemu_postoffice) — investigar su protocolo, estado y compatibilidad antes de reutilizarlo.
-- [Kethen/aemu releases](https://github.com/Kethen/aemu/releases) — revisar requisitos y compatibilidad del cliente antes de instalarlo.
+## Inicio rápido en un VPS
 
-Los enlaces anteriores son referencias para investigar, no una garantía de que funcionen con PES 6 o con una PSP original.
+Instala Docker Engine y Docker Compose según la documentación oficial de Docker. Después:
 
-## Plan de trabajo
+```bash
+git clone https://github.com/djgr9423-eng/psp-online-server.git
+cd psp-online-server
+docker compose up -d --build
+docker compose logs -f
+```
 
-1. Confirmar la versión exacta de PES 6 y que ambos jugadores tienen una copia compatible.
-2. Identificar el sistema de juego en red adecuado para PSP original.
-3. Verificar el protocolo y los requisitos del servidor existente.
-4. Preparar una configuración reproducible de despliegue.
-5. Probar primero con dos clientes y registrar resultados, errores y latencia.
-6. Publicar instrucciones verificadas cuando exista una combinación funcional.
+Abre en el firewall del VPS estos puertos entrantes, en TCP y UDP: `27312` y `27313`. El panel de estado del puerto `8888` queda limitado a localhost.
 
-Consulta [docs/ROADMAP.md](docs/ROADMAP.md), [docs/PES6-TESTS.md](docs/PES6-TESTS.md) y [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+## Configurar PPSSPP
 
-## Seguridad
+Consulta [docs/PPSSPP-SETUP.md](docs/PPSSPP-SETUP.md). Ambos teléfonos deben utilizar una versión de PPSSPP compatible con relay y configurar la misma dirección de servidor y el mismo port offset.
 
-- No subas contraseñas, tokens, claves privadas ni archivos de configuración con secretos.
-- No abras puertos de red hasta identificar el protocolo y limitar el acceso cuando sea posible.
-- Usa únicamente software y copias de juegos que tengas derecho a utilizar.
+## Compatibilidad con PES 6 y otros juegos
 
-## Licencia
+El relay sirve para tráfico Ad Hoc compatible de varios juegos, pero no garantiza que cada juego funcione. La compatibilidad de PES 6 todavía debe probarse con el ID/región del juego usado por ambos jugadores. No se afirma que ya se haya completado una partida de prueba.
 
-Aún no se ha elegido una licencia. Antes de reutilizar código de otros proyectos, revisa sus licencias y requisitos de atribución.
+## Referencias
+
+- [PPSSPP — Quickstart multiplayer](https://www.ppsspp.org/docs/multiplayer/quickstart/)
+- [PPSSPP — Ad hoc multiplayer](https://www.ppsspp.org/docs/multiplayer/how-to-play/)
+- [Servidor upstream aemu_postoffice](https://github.com/Kethen/aemu_postoffice)
+- [Guía upstream de hosting](https://github.com/Kethen/aemu_postoffice/blob/main/hosting.md)
+
+## Licencias
+
+Este repositorio contiene configuración y documentación propias, y descarga el servidor upstream durante el build. Revisa la licencia GPL-3.0 del proyecto upstream antes de redistribuir imágenes o binarios compilados.
